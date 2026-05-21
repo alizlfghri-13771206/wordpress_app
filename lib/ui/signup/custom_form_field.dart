@@ -27,14 +27,16 @@ class CustomFormField extends StatelessWidget {
         textDirection: TextDirection.rtl,
         cursorColor: Constants.primaryColor,
         decoration: InputDecoration(
-          errorStyle: TextStyle(fontFamily: "yekan", fontSize: 13),
+          errorStyle: TextStyle(fontFamily: "yekan", fontSize: 12),
           border: OutlineInputBorder(),
           label: Text(
             labelName,
             style: TextStyle(
+              
               fontFamily: "laleh",
               fontSize: 14,
               fontWeight: FontWeight.w400,
+              color: Constants.primaryColor,
             ),
           ),
         ),

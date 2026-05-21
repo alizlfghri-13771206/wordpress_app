@@ -3,6 +3,8 @@ import "package:wordpress_app/api/api_service.dart";
 import "package:wordpress_app/constants/constants.dart";
 import "package:wordpress_app/models/woocommerece/register_model.dart";
 import "package:wordpress_app/ui/signup/custom_form_field.dart";
+import "package:wordpress_app/ui/utils/extentions.dart";
+import "package:wordpress_app/ui/utils/custom_dialog_box.dart";
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -18,6 +20,14 @@ class _SignupPageState extends State<SignupPage> {
   GlobalKey<FormState> globalKey = GlobalKey<FormState>();
 
   bool isApiCalled = false;
+
+  Widget loading(bool X) {
+    if (X) {
+      return CircularProgressIndicator();
+    } else {
+      return Text('');
+    }
+  }
 
   @override
   void initState() {
@@ -118,13 +128,16 @@ class _SignupPageState extends State<SignupPage> {
                           labelName: "ایمیل",
                           initialValue: customerModel.email,
                           textAlign: TextAlign.left,
-
                           onChanged: (String value) {
                             customerModel.email = value;
                           },
                           validator: (String? value) {
                             if (value!.isEmpty) {
                               return "این فیلد نمیتواند خالی باشد";
+                            } else {
+                              if (!value.isValidEmail) {
+                                return "ایمیل را درست وارد کنید";
+                              }
                             }
                             return null;
                           },
@@ -140,6 +153,9 @@ class _SignupPageState extends State<SignupPage> {
                           validator: (String? value) {
                             if (value!.isEmpty) {
                               return "این فیلد نمیتواند خالی باشد";
+                            }
+                            if (!value.isValidPassword) {
+                              return "رمز باید شامل حروف بزرگ و کوچک و همچنین مواردی چون @ ! و.. باشد";
                             }
                             return null;
                           },
@@ -158,49 +174,33 @@ class _SignupPageState extends State<SignupPage> {
                               onPressed: () {
                                 debugPrint('${customerModel.toJson()}');
                                 if (globalKey.currentState!.validate()) {
+                                  setState(() => isApiCalled = true);
                                   apiService.createCustomer(customerModel).then(
                                     (x) {
                                       if (x) {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text('ووکامرس اپ'),
-                                              content: Text('درسته'),
-                                              actions: [
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text("ok"),
-                                                ),
-                                              ],
-                                            );
+                                        CustomDialogBox.showMessage(
+                                          context,
+                                          "ثبت نام موفق",
+                                          "ثبت نام با موفقیت انجام شد",
+                                          "بستن",
+                                          () {
+                                            Navigator.of(context).pop();
                                           },
                                         );
                                       } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text('ووکامرس اپ'),
-                                              content: Text('ارور'),
-                                              actions: [
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text("ok"),
-                                                ),
-                                              ],
-                                            );
+                                        CustomDialogBox.showMessage(
+                                          context,
+                                          "ثبت نام ناموفق",
+                                          "ثبت نام شما انجام نشد",
+                                          "بستن",
+                                          () {
+                                            Navigator.of(context).pop();
                                           },
                                         );
                                       }
+                                      setState(() => isApiCalled = false);
                                     },
                                   );
-                                } else {
-                                  debugPrint("نام خالی");
                                 }
                               },
                               child: Text(
@@ -234,6 +234,7 @@ class _SignupPageState extends State<SignupPage> {
                           ],
                         ),
                         SizedBox(height: 30),
+                        loading(isApiCalled),
                       ],
                     ),
                   ),

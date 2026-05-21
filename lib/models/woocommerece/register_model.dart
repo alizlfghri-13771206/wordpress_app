@@ -6,6 +6,7 @@ class CustomerModel {
 
   CustomerModel({this.firstName, this.lastName, this.email, this.password});
 
+
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
 
