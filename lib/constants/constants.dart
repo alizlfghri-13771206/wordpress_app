@@ -19,7 +19,7 @@ class Constants {
 
 class WoocommereceInfo {
   // BASE URL WOOCOMMERECE
-  static String baseUrl = 'https://alizolfaghari.ir/wp-json/wc/v3/';
+  static String baseUrl = 'http://45.81.17.183/wp-json/wc/v3/';
 
   // CONSUMER KEY AND SECRET
   static String consumerKey = 'ck_687489a3bc0496d4c8da6cf3e65da0a4bcf81b68';

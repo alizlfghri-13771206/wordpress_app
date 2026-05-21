@@ -19,7 +19,7 @@ class CustomFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl,
+      textDirection: .rtl,
       child: TextFormField(
         initialValue: initialValue != null ? initialValue.toString() : "",
         onChanged: onChanged,
