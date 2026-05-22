@@ -9,7 +9,7 @@ import 'package:wordpress_app/models/woocommerece/register_model.dart'; // ← �
 class APIService {
   Future<bool> createCustomer(CustomerModel customer) async {
     bool returnResponse = false;
-    final Dio _dio = Dio(
+    final Dio dio = Dio(
       BaseOptions(
         baseUrl: "https://45.81.17.183",
         followRedirects: false,
@@ -23,7 +23,7 @@ class APIService {
         },
       ),
     );
-    _dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
     try {
       String token = base64Encode(
@@ -34,7 +34,7 @@ class APIService {
 
       print("شروع رک");
 
-      final response = await _dio.post(
+      final response = await dio.post(
         "/wp-json/wc/v3/customers/",
         data: customer.toJson(),
         options: Options(
