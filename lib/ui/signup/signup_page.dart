@@ -1,10 +1,13 @@
 import "package:flutter/material.dart";
+import "package:page_transition/page_transition.dart";
 import "package:wordpress_app/api/api_service.dart";
 import "package:wordpress_app/constants/constants.dart";
 import "package:wordpress_app/models/woocommerece/register_model.dart";
 import "package:wordpress_app/ui/signup/custom_form_field.dart";
+import "package:wordpress_app/ui/utils/custom_app_bar.dart";
 import "package:wordpress_app/ui/utils/extentions.dart";
 import "package:wordpress_app/ui/utils/custom_dialog_box.dart";
+import 'package:wordpress_app/ui/login_page/login_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -42,44 +45,7 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Positioned(
-            top: 40,
-            left: 20,
-            right: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // X Button
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Constants.primaryColor.withValues(alpha: .3),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.close, color: Constants.primaryColor),
-                  ),
-                ),
-                // Like Button
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Constants.primaryColor.withValues(alpha: .2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.share, color: Constants.primaryColor),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          CustomAppBar(title: "ثبت نام"),
           Positioned(
             top: 130,
             left: 20,
@@ -221,7 +187,14 @@ class _SignupPageState extends State<SignupPage> {
                                   vertical: 12,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                  PageTransition(
+                                    type: PageTransitionType.leftToRight,
+                                    child: LoginPage(),
+                                  ),
+                                );
+                              },
                               child: Text(
                                 "قبلاً اکانت ساختی؟",
                                 style: TextStyle(

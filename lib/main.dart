@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:wordpress_app/ui/login_page/login_page.dart';
 import "api/api_service.dart";
-import 'package:wordpress_app/ui/signup/signup_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -28,7 +28,7 @@ class PlantApp extends StatelessWidget {
         theme: ThemeData(scaffoldBackgroundColor: Colors.white),
         title: "Plant App",
         debugShowCheckedModeBanner: false,
-        home: SignupPage(),
+        home: LoginPage(),
       ),
     );
   }

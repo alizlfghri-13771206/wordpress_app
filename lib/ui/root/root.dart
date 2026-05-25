@@ -10,7 +10,6 @@ import "package:wordpress_app/ui/home/home.dart";
 import "package:wordpress_app/ui/profile/profile.dart";
 import "package:wordpress_app/ui/scan.dart";
 import "package:wordpress_app/ui/cart_page/shopping_cart.dart";
-import "package:wordpress_app/ui/signup/signup_page.dart";
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
@@ -47,6 +46,7 @@ class _RootPageState extends State<RootPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0.0,
         backgroundColor: Colors.white70,
         title: Padding(
