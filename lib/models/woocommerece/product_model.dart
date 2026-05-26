@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class ProductModel {
   int? id;
   String? name, description, shortDescription, price, regularPrice;
@@ -24,7 +22,7 @@ class ProductModel {
     description = json['description'];
     price = json['price'];
     regularPrice = json['regular_price'];
-    if (json['categories']) {
+    if (json['categories'] != null) {
       categories = <Categories>[];
       json["categories"].forEach((v) {
         categories?.add(Categories.fromJson(v));
@@ -45,7 +43,10 @@ class WooImages {
   WooImages({this.src});
 
   WooImages.fromJson(Map<String, dynamic> json) {
-    src = json['src'];
+    src = (json['src'] as String?)?.replaceFirst(
+      "alizolfaghari.ir",
+      "45.81.17.183",
+    );
   }
 }
 
@@ -58,7 +59,7 @@ class Categories {
     name = json['name'];
   }
 
-  Map<String, dynamic> toJosn() {
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> data = {};
     data = {'id': id, 'name': name};
     return data;

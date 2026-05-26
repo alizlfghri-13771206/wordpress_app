@@ -1,7 +1,9 @@
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:wordpress_app/constants/constants.dart";
 import "package:wordpress_app/models/plant.dart";
+import "package:wordpress_app/providers/post_provider.dart";
 import "package:wordpress_app/providers/shop_provider.dart";
 import "package:wordpress_app/ui/product_details/detail_page.dart";
 import "package:wordpress_app/widgets/extentions.dart";
@@ -29,6 +31,8 @@ class _HomePageState extends State<HomePage> {
     Future.delayed(Duration.zero).then((x) {
       final listOfShops = Provider.of<ShopProvider>(context, listen: false);
       listOfShops.getProductsFromProvider();
+      final listOfPosts = Provider.of<PostProvider>(context, listen: false);
+      listOfPosts.fetchPostsFromP();
     });
 
     super.initState();
@@ -37,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    NumberFormat numberFormat = NumberFormat.decimalPattern('fa');
+    // NumberFormat numberFormat = NumberFormat.decimalPattern('fa');
     return Consumer<ShopProvider>(
       builder: (context, value, child) {
         if (value.isLoading) {
@@ -59,7 +63,6 @@ class _HomePageState extends State<HomePage> {
                           color: Constants.primaryLightColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        // height: 50,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Row(
@@ -129,10 +132,10 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: size.height * .30,
                     child: ListView.builder(
+                      itemCount: value.products.length,
                       physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       reverse: true,
-                      itemCount: value.products.length,
                       itemBuilder: (context, index) {
                         final product = value.products[index];
                         return GestureDetector(
@@ -171,10 +174,18 @@ class _HomePageState extends State<HomePage> {
                                   top: 50,
                                   bottom: 50,
                                   left: 50,
-                                  child: Image.network(
-                                    product.images![0].toString(),
+                                  // sssssssssssssssssssssssssssss
+                                  child: CachedNetworkImage(
+                                    imageUrl: product.images![0].src!,
+                                    httpHeaders: {"Host": "alizolfaghari.ir"},
+                                    placeholder: (context, url) =>
+                                        SizedBox(
+                                          height: 19,
+                                          width: 19,
+                                          child:CircularProgressIndicator(),),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
                                   ),
-                                  // Image.asset(_plantList[index].imageURL)
                                 ),
                                 Positioned(
                                   bottom: 15,
@@ -187,9 +198,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     width: 40,
                                     child: Text(
-                                      numberFormat.format(
-                                        product.price.toString().farsiNumber,
-                                      ),
+                                      // ssssssssssssssssssssssssssssssss
+                                      product.price.toString().farsiNumber,
                                       style: TextStyle(
                                         color: Constants.primaryColor,
                                         fontSize: 12,
@@ -206,6 +216,7 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
+                                        // ssssssssssssssssssssssssssssssss
                                         product.categories![0].name.toString(),
                                         style: TextStyle(
                                           color: Colors.white70,
@@ -214,8 +225,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       Text(
-                                        product.name
-                                            .toString(), 
+                                        // ssssssssssssssssssssssssssssssssssssss
+                                        product.name.toString(),
                                         style: TextStyle(
                                           color: Colors.white70,
                                           fontFamily: "yekan",
@@ -245,20 +256,48 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    height: size.height * .3,
-                    width: size.width,
-                    alignment: Alignment.center,
-                    child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      // مطالب وبلاگ
-                      itemCount: value.products.length,
-                      itemBuilder: (context, index) {
-                        // return NewPlantWidget(plantList: _plantList, index: index);
-                        return Text("weblog");
-                      },
-                    ),
+                  Consumer<PostProvider>(
+                    builder: (context, value, child) {
+                      if (value.isLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 18),
+                        height: size.height * .3,
+                        width: size.width,
+                        alignment: Alignment.center,
+                        child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          // مطالب وبلاگ
+                          itemCount: value.posts.length,
+                          itemBuilder: (context, index) {
+                            final post = value.posts[index];
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Constants.primaryColor.withValues(
+                                  alpha: .7,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                post.title!,
+                                textDirection: .rtl,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "yekan",
+                                  fontSize: 20,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

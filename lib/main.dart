@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:wordpress_app/providers/post_provider.dart';
 import 'package:wordpress_app/providers/shop_provider.dart';
 import 'package:wordpress_app/ui/login_page/login_page.dart';
 import 'package:wordpress_app/ui/root/root.dart';
@@ -21,7 +22,10 @@ void main() {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => ShopProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (context) => ShopProvider()),
+        ChangeNotifierProvider(create: (context) => PostProvider()),
+      ],
       child: PlantApp(),
     ),
   );

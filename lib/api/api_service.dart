@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import "package:http/http.dart" as http;
 import 'package:dio/io.dart';
 import 'package:wordpress_app/constants/constants.dart';
+import 'package:wordpress_app/models/woocommerece/post_model.dart';
+import 'package:wordpress_app/models/woocommerece/product_category_model.dart';
 import 'package:wordpress_app/models/woocommerece/product_model.dart';
 import 'package:wordpress_app/models/woocommerece/register_model.dart';
 import "package:wordpress_app/models/woocommerece/login_model.dart";
@@ -83,6 +85,7 @@ class APIService {
 
       if (response.statusCode == 200) {
         loginModel = LoginResponseModel.fromJson(response.data, 200);
+        print("برگشت کد 201 و موفقیت آمیز بودن درخواست");
       } else {
         loginModel = LoginResponseModel.fromJson(response.data, 403);
       }
@@ -97,15 +100,21 @@ class APIService {
   }
 
   Future<List<ProductModel>> getProducts() async {
-    final String productsPath =
-        "/wp-json/wc/v3/products/?consumer_key=ck_687489a3bc0496d4c8da6cf3e65da0a4bcf81b68&consumer_secret=cs_4ec95035b6137ba695c13bf44eee8928052309db";
+    // dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    String token = base64Encode(
+      utf8.encode(
+        "${WoocommereceInfo.consumerKey}:${WoocommereceInfo.consumerSecret}",
+      ),
+    );
+
     List<ProductModel> listOfAllProducts = [];
     try {
-      final response = await Dio().get(
-        "https://45.81.17.183$productsPath",
+      final response = await dio.get(
+        "/wp-json/wc/v3/products/",
         options: Options(
           headers: <String, dynamic>{
             HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "Basic $token",
           },
         ),
       );
@@ -114,11 +123,62 @@ class APIService {
             .map((x) => ProductModel.fromJson(x))
             .toList();
 
-            // listOfAllProducts.add(ProductModel.fromJson(response.data as List).map(x){})
+        // listOfAllProducts.add(ProductModel.fromJson(response.data as List).map(x){})
+      }
+    } on DioException catch (e) {
+      Exception(e.toString());
+    }
+    return listOfAllProducts;
+  }
+
+  Future<List<Post>> getPosts() async {
+    // dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    List<Post> listOfAllPosts = [];
+
+    try {
+      final response = await dio.get(
+        "/wp-json/wp/v2/posts",
+        options: Options(
+          headers: <String, dynamic>{
+            HttpHeaders.contentTypeHeader: "application/json",
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        listOfAllPosts = (response.data as List)
+            .map((x) => Post.fromJson(x))
+            .toList();
+      }
+    } on DioException catch (e) {
+      Exception(e.toString());
+    }
+    return listOfAllPosts;
+  }
+
+  Future<List<ProductCategoryModel>> getProductsCategory() async {
+    final String productCategoryPath =
+        "/wp-json/wc/v3/products/categories/?consumer_key=ck_687489a3bc0496d4c8da6cf3e65da0a4bcf81b68&consumer_secret=cs_4ec95035b6137ba695c13bf44eee8928052309db";
+    List<ProductCategoryModel> listOfProductsCategory = [];
+    try {
+      final response = await Dio().get(
+        "https://45.81.17.183$productCategoryPath",
+        options: Options(
+          headers: <String, dynamic>{
+            HttpHeaders.contentTypeHeader: "application/json",
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        listOfProductsCategory = (response.data as List)
+            .map((x) => ProductCategoryModel.fromJson(x))
+            .toList();
+
+        // listOfAllProducts.add(ProductModel.fromJson(response.data as List).map(x){})
       }
     } on DioException catch (e) {
       print("$e");
     }
-    return listOfAllProducts;
+    return listOfProductsCategory;
   }
 }
