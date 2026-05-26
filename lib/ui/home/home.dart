@@ -180,8 +180,8 @@ class _HomePageState extends State<HomePage> {
                                     httpHeaders: {"Host": "alizolfaghari.ir"},
                                     placeholder: (context, url) =>
                                         SizedBox(
-                                          height: 19,
-                                          width: 19,
+                                          height: 10,
+                                          width: 10,
                                           child:CircularProgressIndicator(),),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
